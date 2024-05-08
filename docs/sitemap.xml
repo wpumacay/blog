@@ -2,25 +2,25 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://localhost:1313/authors/</loc>
+    <loc>http://wpumacay.github.io/blog/authors/</loc>
     <lastmod>2024-05-02T16:14:24-05:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/first-post/</loc>
+    <loc>http://wpumacay.github.io/blog/posts/first-post/</loc>
     <lastmod>2024-05-02T16:14:24-05:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/</loc>
+    <loc>http://wpumacay.github.io/blog/posts/</loc>
     <lastmod>2024-05-02T16:14:24-05:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/</loc>
+    <loc>http://wpumacay.github.io/blog/</loc>
     <lastmod>2024-05-02T16:14:24-05:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/authors/wilbert-pumacay/</loc>
+    <loc>http://wpumacay.github.io/blog/authors/wilbert-pumacay/</loc>
     <lastmod>2024-05-02T16:14:24-05:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/categories/</loc>
+    <loc>http://wpumacay.github.io/blog/categories/</loc>
   </url><url>
-    <loc>http://localhost:1313/series/</loc>
+    <loc>http://wpumacay.github.io/blog/series/</loc>
   </url><url>
-    <loc>http://localhost:1313/tags/</loc>
+    <loc>http://wpumacay.github.io/blog/tags/</loc>
   </url>
 </urlset>

@@ -1,4 +1,4 @@
-baseurl = "http://wpumacay.github.io"
+baseurl = "http://wpumacay.github.io/blog/"
 title = "Wilbert Pumacay"
 theme = "hugo-coder"
 languagecode = "en"
