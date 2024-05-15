@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>
+  RL using Policy Gradients · Wilbert Pumacay
+</title>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+
+
+
+
+<meta name="author" content="Wilbert Pumacay">
+<meta name="description" content="A post where I explain Policy Gradients in the context of RL">
+<meta name="keywords" content="blog,robotics,learning">
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="RL using Policy Gradients">
+  <meta name="twitter:description" content="A post where I explain Policy Gradients in the context of RL">
+
+<meta property="og:url" content="http://wpumacay.github.io/blog/posts/rl-policy-gradients/">
+  <meta property="og:site_name" content="Wilbert Pumacay">
+  <meta property="og:title" content="RL using Policy Gradients">
+  <meta property="og:description" content="A post where I explain Policy Gradients in the context of RL">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-05-08T14:48:04-05:00">
+    <meta property="article:modified_time" content="2024-05-08T14:48:04-05:00">
+    <meta property="article:tag" content="RL">
+    <meta property="article:tag" content="ML">
+
+
+
+
+<link rel="canonical" href="http://wpumacay.github.io/blog/posts/rl-policy-gradients/">
+
+
+<link rel="preload" href="/fonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+
+
+  
+  
+  <link rel="stylesheet" href="/blog/css/coder.min.38c4552ac40f9ae3408bad40358f654ebd8804412fe74ed56f2d6c8a7af82dd3.css" integrity="sha256-OMRVKsQPmuNAi61ANY9lTr2IBEEv507Vby1sinr4LdM=" crossorigin="anonymous" media="screen" />
+
+
+
+
+
+
+  
+    
+    
+    <link rel="stylesheet" href="/blog/css/coder-dark.min.a00e6364bacbc8266ad1cc81230774a1397198f8cfb7bcba29b7d6fcb54ce57f.css" integrity="sha256-oA5jZLrLyCZq0cyBIwd0oTlxmPjPt7y6KbfW/LVM5X8=" crossorigin="anonymous" media="screen" />
+  
+
+
+
+ 
+
+
+
+
+<link rel="icon" type="image/svg+xml" href="/images/favicon.svg" sizes="any">
+<link rel="icon" type="image/png" href="/images/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/images/favicon-16x16.png" sizes="16x16">
+
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+
+
+
+
+
+</head>
+
+
+
+
+
+
+<body class="preload-transitions colorscheme-auto">
+  
+<div class="float-container">
+    <a id="dark-mode-toggle" class="colorscheme-toggle">
+        <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+    </a>
+</div>
+
+
+  <main class="wrapper">
+    <nav class="navigation">
+  <section class="container">
+    
+    <a class="navigation-title" href="http://wpumacay.github.io/blog/">
+      Wilbert Pumacay
+    </a>
+    
+    
+      <input type="checkbox" id="menu-toggle" />
+      <label class="menu-button float-right" for="menu-toggle">
+        <i class="fa-solid fa-bars fa-fw" aria-hidden="true"></i>
+      </label>
+      <ul class="navigation-list">
+        
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/blog/posts/">Blog</a>
+            </li>
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/blog/about/">About</a>
+            </li>
+          
+        
+        
+      </ul>
+    
+  </section>
+</nav>
+
+
+    <div class="content">
+      
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">
+            <a class="title-link" href="http://wpumacay.github.io/blog/posts/rl-policy-gradients/">
+              RL using Policy Gradients
+            </a>
+          </h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fa-solid fa-calendar" aria-hidden="true"></i>
+              <time datetime="2024-05-08T14:48:04-05:00">
+                May 8, 2024
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fa-solid fa-clock" aria-hidden="true"></i>
+              3-minute read
+            </span>
+          </div>
+          <div class="authors">
+  <i class="fa-solid fa-user" aria-hidden="true"></i>
+    <a href="/blog/authors/wilbert-pumacay/">Wilbert Pumacay</a></div>
+
+          <div class="categories">
+  <i class="fa-solid fa-folder" aria-hidden="true"></i>
+    <a href="/blog/categories/rl/">RL</a></div>
+
+          <div class="tags">
+  <i class="fa-solid fa-tag" aria-hidden="true"></i>
+    <span class="tag">
+      <a href="/blog/tags/rl/">RL</a>
+    </span>
+      <span class="separator">•</span>
+    <span class="tag">
+      <a href="/blog/tags/ml/">ML</a>
+    </span></div>
+
+        </div>
+      </header>
+
+      <div class="post-content">
+        
+        <p>This is the first post on a series dedicated to Policy Gradient based algorithms,
+in which we will cover the theory of how Policy Gradients work. We&rsquo;ll implement
+the vanilla version of the <code>REINFORCE</code> algorithm, and use it to solve some simple
+tasks from <code>Gymnasium</code>.</p>
+<h2 id="0-preliminaries">
+  0. Preliminaries
+  <a class="heading-link" href="#0-preliminaries">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>Before getting into the math of Policy Gradients, let&rsquo;s define some terms that will
+help us make the math simpler. Let&rsquo;s define a <code>trajectory</code> \( \tau \) as the collection
+of all states and actions that we get from the interaction with the environment.
+For example, for the finite horizon case we will define a trajectory as follows:</p>
+<p>\[
+\tau = \left( s_{0},a_{0},s_{1},a_{1},\dots, s_{T-2}, a_{T-2}, s_{T-1} \right)
+\]</p>
+<p>These trajectories come from a certain distribution induced by our policy \(\pi\),
+which we denote as follows:</p>
+<p>\[
+\tau \sim \rho_{\pi}(\tau)
+\]</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h2 id="1-policy-gradients">
+  1. Policy Gradients
+  <a class="heading-link" href="#1-policy-gradients">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>Recall that the objective we&rsquo;re trying to solve in the RL setup is to maximize the
+expected sum of rewards during our interactions with the environment. For now we&rsquo;ll
+work on the Finite-Horizon setting, in which we can write the objective as follows:</p>
+<p>\[
+J = \mathbb{E} \left[ \sum_{t=0}^{T-1} r(s_{t}, a_{t}) \right]
+\]</p>
+<p>Unlike Value-Based methods, in which we tried to learn an optimal State-Value function
+or Action-Value function, Policy Gradients is a Policy-Based method, where we try
+to learn an optimal policy \( \pi \) directly. In the tabular case, where we have
+a discrete finite set of states \( \mathrm{S} \) and a discrete finite set of actions
+\( \mathrm{A} \), we can represent the policy \( \pi \) as a lookup table.
+However, to deal with the case of infinite sets, or for continuous state and action
+spaces, we have to resort to use a function approximator (like a neural network),
+to represent our policy. We&rsquo;ll state this by writing \( \pi_{\theta} \) as our
+policy that is being parametrized by a neural network with parameters \(\theta\).
+The objective can then be phrased as finding the best set of parameters \(\theta^{\ast}\)
+that maximize the expected sum of rewards, as follows:</p>
+<p>\[
+\theta^{\ast} = \arg\max_{\theta} \mathbb{E}
+\left[ \sum_{t=0}^{T-1} r(s_{t}, a_{t}) \right]
+\]</p>
+<p>Using the notation of trajectories, we can re-write the sum of rewards over an
+episode in a more compact, using \( r(\tau) = \sum_{t=0}^{T-1} r(s_{t}, a_{t}) \)
+we can write the objective as follows:</p>
+<p>\[
+\theta^{\ast} = \arg\max_{\theta} E_{\tau \sim p_{\theta}(\tau)}
+\left[ r(\tau) \right]
+\]</p>
+<p>Unrolling the expectation, we have that the objective we want to optimize is the
+following:</p>
+<p>\[
+\tag{1} J(\theta) = \int p_{\theta}(\tau) r(\tau) d\tau
+\]</p>
+<h3 id="11-direct-policy-differentiation">
+  1.1. Direct Policy Differentiation
+  <a class="heading-link" href="#11-direct-policy-differentiation">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h3>
+<p>The Policy Gradients method tries to directly optimize the objective from eq. 1,
+which does by directly differentiating such objective and using gradient ascent
+with the resulting gradient.</p>
+<p>\[
+\nabla_{theta} J(\theta) = \nabla_{\theta} \int p_{\theta}(\tau) r(\tau) d\tau =
+\int \nabla_{\theta} p_{\theta}(\tau) r(\tau) d\tau
+\]</p>
+<p>Note however that we don&rsquo;t have access to the environment dynamics, so we can&rsquo;t
+directly compute the gradient over the trajectory distribution. Instead, what we
+have are samples from the environment. We can rearrange the previous expression
+by using the following trick:</p>
+<p>\[
+\nabla_{\theta} p_{\theta}(\tau) =
+p_{\theta}(\tau) \nabla_{\theta} \log p_{\theta}(\tau) \tag{2}
+\]</p>
+<p>Replacing the expression in eq. 2, we get the following expression for the gradient
+of the objective (<code>Policy Gradient</code>):</p>
+<p>\[
+\hat{g} = \nabla_{\theta} J(\theta) =
+\int p_{\theta}(\tau) \nabla_{\theta} \log p_{\theta}(\tau) r(\tau) d\tau
+\]</p>
+<p>This last expression is in the form of an expectation, so we van just rearrange it
+back to the expectation form, resulting the following expression for the
+<code>Policy Gradient</code>.</p>
+<p>\[
+\hat{g} = E_{\tau \sim p_{\theta}(\tau)}
+\left[ \nabla_{\theta} \log p_{\theta}(\tau) r(\tau) \right] \tag{3}
+\]</p>
+
+      </div>
+
+
+      <footer>
+        
+
+
+        
+        
+        
+        
+        
+
+        
+        
+      </footer>
+    </article>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css"
+    integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+  
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"
+    integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+    onload="renderMathInElement(document.body,
+      {
+        delimiters: [
+          {left: '$$', right: '$$', display:true},
+          {left: '$', right: '$', display:false},
+          {left: '\\(', right: '\\)', display: false},
+          {left: '\\[', right: '\\]', display: true}
+        ]
+      }
+    );"></script>
+  </section>
+
+    </div>
+
+    <footer class="footer">
+  <section class="container">
+    ©
+    
+      2023 -
+    
+    2024
+     Wilbert Pumacay 
+    ·
+    
+    Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/" target="_blank" rel="noopener">Coder</a>.
+    
+  </section>
+</footer>
+
+  </main>
+
+  
+
+  
+  
+  <script src="/blog/js/coder.min.6ae284be93d2d19dad1f02b0039508d9aab3180a12a06dcc71b0b0ef7825a317.js" integrity="sha256-auKEvpPS0Z2tHwKwA5UI2aqzGAoSoG3McbCw73gloxc="></script>
+  
+
+  
+
+  
+
+
+  
+  
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</body>
+
+</html>
