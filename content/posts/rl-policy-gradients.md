@@ -35,15 +35,6 @@ which we denote as follows:
 \tau \sim \rho_{\pi}(\tau)
 \\]
 
-<!--
-The probability of a trajectory \\( p(\tau) \\) can be expanded as follows:
-
-\\[
-p(\tau) = p(s_{0},a_{0},\dots,s_{T-2},a_{T-2},s_{T-1})=
-    p(s_{0}) \prod_{t=0}^{T-2}
-\\]
--->
-
 ## 1. Policy Gradients
 
 Recall that the objective we're trying to solve in the RL setup is to maximize the
@@ -89,12 +80,12 @@ following:
 
 ### 1.1. Direct Policy Differentiation
 
-The Policy Gradients method tries to directly optimize the objective from eq. 1,
-which does by directly differentiating such objective and using gradient ascent
-with the resulting gradient.
+The Policy Gradients method tries to directly optimize the objective from eq. (1),
+by directly differentiating such objective and using gradient ascent with the
+resulting gradient.
 
 \\[
-\nabla_{theta} J(\theta) = \nabla_{\theta} \int p_{\theta}(\tau) r(\tau) d\tau =
+\nabla_{\theta} J(\theta) = \nabla_{\theta} \int p_{\theta}(\tau) r(\tau) d\tau =
     \int \nabla_{\theta} p_{\theta}(\tau) r(\tau) d\tau
 \\]
 
@@ -108,7 +99,7 @@ by using the following trick:
     p_{\theta}(\tau) \nabla_{\theta} \log p_{\theta}(\tau) \tag{2}
 \\]
 
-Replacing the expression in eq. 2, we get the following expression for the gradient
+Replacing the expression in eq. (2), we get the following expression for the gradient
 of the objective (`Policy Gradient`):
 
 \\[
@@ -123,4 +114,39 @@ back to the expectation form, resulting the following expression for the
 \\[
 \hat{g} = E_{\tau \sim p_{\theta}(\tau)}
     \left[ \nabla_{\theta} \log p_{\theta}(\tau) r(\tau) \right] \tag{3}
+\\]
+
+Because we now have an expectation, we can compute this estimate of the gradient
+using samples, namely trajectory samples \\(\tau^{(k)} \\) as follows:
+
+\\[
+\hat{g} \approx \frac{1}{N} \sum_{i=0}^{N-1}
+    \nabla_{\theta} \log p_{\theta}(\tau^{(i)}) r(\tau^{(i)})
+\\]
+
+Note that the only quantity we still have to compute is the gradient over the
+trajectory distribution \\(p_{\theta}(\tau)\\), which we can expand as follows:
+
+\\[
+p(\tau) = p(s_{0},a_{0},\dots,s_{T-2},a_{T-2},s_{T-1})=
+    p(s_{0}) \prod_{t=0}^{T-2} \pi_{\theta}(a_{t}|s_{t}) p(s_{t+1}|s_{t}, a_{t})
+\\]
+
+Replacing this expression in our estimate for the gradient we obtain the following:
+
+\\[
+\hat{g} \approx \frac{1}{N} \sum_{i=0}^{N-1}
+    \nabla_{\theta} \log \left( p(s_{0}) \prod_{t=0}^{T-2}
+        \pi_{\theta}(a_{t}|s_{t}) p(s_{t+1}|s_{t}, a_{t}) \right) r(\tau)
+\\]
+
+Note that the expression inside the \\( \log \\) can be split into terms, as the
+logarithm splits when using products as argument. This results in the following
+expression:
+
+\\[
+\hat{g} \approx \frac{1}{N} \sum_{i=0}^{N-1} \sum_{t=0}^{T-1}
+    \nabla_{\theta} \left[ \log p(s_{0}) + \sum_{t=0}^{T-2}
+        \pi_{\theta}(a_{t}|s_{t}) p(s_{t+1}|s_{t}, a_{t})
+            \right] r(\tau)
 \\]
